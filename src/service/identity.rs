@@ -1,3 +1,7 @@
+mod proto {
+    tonic::include_proto!("identity");
+}
+
 use async_openai::{
     Client,
     types::{
@@ -7,13 +11,10 @@ use async_openai::{
         ImageUrlArgs, ResponseFormat, ResponseFormatJsonSchema,
     },
 };
-use proto::{IdentityCard, IdentityCardRequest, IdentityCardResponse};
+pub use identity_service_server::IdentityServiceServer;
+use proto::{IdentityCard, IdentityCardRequest, IdentityCardResponse, identity_service_server};
 use schemars::schema_for;
 use tonic::{Request, Response, Status};
-
-mod proto {
-    tonic::include_proto!("identity");
-}
 
 const SYSTEM_PROMPT: &str = "You are an assistance in extracting identity card information from image. Make a field empty if you cant find information about it.";
 const DEFAULT_PROMPT: &str = "Extract data from this identity card";
@@ -22,7 +23,7 @@ const DEFAULT_PROMPT: &str = "Extract data from this identity card";
 pub struct IdentityService;
 
 #[tonic::async_trait]
-impl proto::identity_service_server::IdentityService for IdentityService {
+impl identity_service_server::IdentityService for IdentityService {
     async fn process_identity_card(
         &self,
         request: Request<IdentityCardRequest>,
