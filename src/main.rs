@@ -26,6 +26,8 @@ async fn main() {
 
     let addr = SocketAddr::new([0, 0, 0, 0].into(), 3000);
 
+    tracing::info!("Starting ...");
+
     Server::builder()
         .add_service(IdentityServiceServer::new(IdentityService))
         .serve(addr)
