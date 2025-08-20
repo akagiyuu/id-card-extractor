@@ -1,4 +1,5 @@
 mod service;
+mod config;
 
 use std::net::SocketAddr;
 

@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.99"
 async-openai = "0.29.1"
+config = { version = "0.15.14", default-features = false }
 prost = "0.14.1"
 schemars = "1.0.4"
 serde = { version = "1.0.219", features = ["derive"] }
