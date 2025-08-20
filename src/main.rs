@@ -1,7 +1,9 @@
+mod config;
 mod service;
 
 use std::net::SocketAddr;
 
+use config::CONFIG;
 use service::identity::{IdentityService, IdentityServiceServer};
 use tonic::transport::Server;
 use tracing::level_filters::LevelFilter;
@@ -24,7 +26,7 @@ async fn main() {
         )
         .init();
 
-    let addr = SocketAddr::new([0, 0, 0, 0].into(), 3000);
+    let addr = SocketAddr::new([0, 0, 0, 0].into(), CONFIG.port);
 
     Server::builder()
         .add_service(IdentityServiceServer::new(IdentityService))
