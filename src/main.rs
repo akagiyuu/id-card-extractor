@@ -1,9 +1,16 @@
+mod service;
+
+use std::net::SocketAddr;
+
+use service::identity::{IdentityService, IdentityServiceServer};
+use tonic::transport::Server;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::{
     EnvFilter, fmt::time::ChronoLocal, layer::SubscriberExt, util::SubscriberInitExt,
 };
 
-fn main() {
+#[tokio::main]
+async fn main() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::fmt::layer()
@@ -16,4 +23,12 @@ fn main() {
                 .from_env_lossy(),
         )
         .init();
+
+    let addr = SocketAddr::new([0, 0, 0, 0].into(), 3000);
+
+    Server::builder()
+        .add_service(IdentityServiceServer::new(IdentityService))
+        .serve(addr)
+        .await
+        .unwrap();
 }
