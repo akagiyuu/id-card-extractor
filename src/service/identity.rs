@@ -4,6 +4,7 @@ mod proto {
 
 use async_openai::{
     Client,
+    config::OpenAIConfig,
     types::{
         ChatCompletionRequestMessageContentPartImageArgs,
         ChatCompletionRequestMessageContentPartTextArgs, ChatCompletionRequestSystemMessage,
@@ -15,6 +16,8 @@ pub use identity_service_server::IdentityServiceServer;
 use proto::{IdentityCard, IdentityCardRequest, IdentityCardResponse, identity_service_server};
 use schemars::schema_for;
 use tonic::{Request, Response, Status};
+
+use crate::config::CONFIG;
 
 const SYSTEM_PROMPT: &str = "You are an assistance in extracting identity card information from image. Make a field empty if you cant find information about it.";
 const DEFAULT_PROMPT: &str = "Extract data from this identity card";
@@ -65,13 +68,14 @@ impl identity_service_server::IdentityService for IdentityService {
                 .into(),
         ];
         let request = CreateChatCompletionRequestArgs::default()
-            .model("gpt-4o-mini")
+            .model(&CONFIG.model)
             .messages(messages)
             .response_format(response_format)
             .build()
             .expect("This must never fail");
 
-        let client = Client::new();
+        let client =
+            Client::with_config(OpenAIConfig::new().with_api_key(CONFIG.openai_key.clone()));
         let response = match client.chat().create(request).await {
             Ok(request) => request,
             Err(error) => {
