@@ -3,7 +3,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build_client(false)
         .message_attribute(
             "IdentityCard",
-            "#[derive(serde::Serialize, serde::Deserialize, schemars::JsonSchema)]",
+            "#[derive(serde::Serialize, serde::Deserialize, schemars::JsonSchema)]\n#[serde(deny_unknown_fields)]",
         )
         .compile_protos(&["proto/identity.proto"], &[])?;
 
